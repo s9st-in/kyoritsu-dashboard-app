@@ -12,8 +12,8 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap"
         rel="stylesheet" />
-  <script type="module" crossorigin src="./assets/main-BmlBVaCw.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/main-C96TuQKi.css">
+  <script type="module" crossorigin src="./assets/main-CY_75k5I.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/main-BloSNaQp.css">
 </head>
 
 <body class="font-sans font-normal">
@@ -24,7 +24,7 @@
                     <span class="text-lg material-icons mr-2">space_dashboard</span>
                     <span class="hidden md:block text-xl font-bold">重要指標ダッシュボード</span>
                 </li>
-                <li class="px-4 py-4 md:px-8 flex items-center">
+                <li class="flex-1 px-4 py-4 md:px-8 flex items-center justify-end">
                     <span class="text-base sm:text-lg material-icons mr-2">calendar_month</span>
                     <span class="text-base sm:text-lg font-bold">最終更新：</span>
                     <span class="text-lg sm:text-lg font-bold">{{ formattedDateTime }}</span>
@@ -91,20 +91,17 @@
                             @click="() => { openExternalLink(button.url); isMobileMenuOpen = false; }"
                             @mouseenter="onMouseEnter(button.id, $event)" @mouseleave="onMouseLeave()"
                             :style="{ borderColor: button.borderColor }">
-                            <div class="flex items-center gap-2">
-                                <div class="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0"
+                            <div class="flex flex-col items-center gap-1">
+                                <div class="w-12 h-12 rounded-full flex items-center justify-center"
                                     :style="{ backgroundColor: button.backgroundColor }">
                                     <span class="material-icons text-3xl" :style="{ color: button.borderColor }">
                                         {{ getButtonMobileIcon(button.id) }}
                                     </span>
                                 </div>
-                                <div class="flex-1 text-center">
-                                    <h3
-                                        class="text-xl font-semibold text-gray-800 leading-tight whitespace-normal break-words">
-                                        {{
-                                        button.title
-                                        }}</h3>
-                                </div>
+                                <h3 class="text-sm font-semibold text-gray-800 text-center leading-tight">
+                                    {{
+                                    button.title
+                                    }}</h3>
                             </div>
                         </div>
                     </div>
