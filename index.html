@@ -12,24 +12,25 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap"
         rel="stylesheet" />
-  <script type="module" crossorigin src="./assets/main-CY_75k5I.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/main-BloSNaQp.css">
+  <script type="module" crossorigin src="./assets/main-BxEBrrv3.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/main-Bm3PCik7.css">
 </head>
 
 <body class="font-sans font-normal">
     <div id="app">
-        <div class="bg-white text-gray-800 tracking-wider shadow-md">
-            <ul class="flex text-sm items-center justify-between w-full">
-                <li class="px-4 py-4 md:px-8 flex items-center">
+        <div class="navbar bg-white text-gray-800 tracking-wider shadow-md min-h-0 px-4 md:px-8 py-4">
+            <div class="navbar-start">
+                <div class="flex items-center">
                     <span class="text-lg material-icons mr-2">space_dashboard</span>
                     <span class="hidden md:block text-xl font-bold">重要指標ダッシュボード</span>
-                </li>
-                <li class="flex-1 px-4 py-4 md:px-8 flex items-center justify-end">
-                    <span class="text-base sm:text-lg material-icons mr-2">calendar_month</span>
-                    <span class="text-base sm:text-lg font-bold">最終更新：</span>
-                    <span class="text-lg sm:text-lg font-bold">{{ formattedDateTime }}</span>
-                </li>
-            </ul>
+                </div>
+            </div>
+            <div class="navbar-end">
+                <div class="flex sm:flex-row flex-col sm:items-center">
+                    <span class="text-xs sm:text-sm">最終更新</span>
+                    <span class="text-sm sm:text-base sm:ml-1">{{ formattedDateTime }}</span>
+                </div>
+            </div>
         </div>
         <header>
             <div class="flex flex-row items-center py-6 px-8 gap-6">
@@ -39,20 +40,22 @@
 
                 <!-- モバイル用メニューボタン -->
                 <div class="md:hidden ml-auto">
-                    <button @click="toggleMobileMenu" :class="[
-                            'group flex flex-col items-center gap-1 rounded-md px-4 py-2 border-2 shadow-sm hover:shadow-md transition-all duration-200',
-                            isMobileMenuOpen 
-                                ? 'bg-gray-100 border-gray-400 hover:bg-gray-500' 
-                                : 'bg-green-50 border-green-500 hover:bg-green-500'
-                        ]" aria-label="メニューを開く">
-                        <span :class="[
-                            'material-icons group-hover:text-white text-2xl',
-                            isMobileMenuOpen ? 'text-gray-700' : 'text-green-700'
-                        ]">{{ isMobileMenuOpen ? 'close' : 'apps' }}</span>
-                        <span :class="[
-                            'text-xs font-semibold group-hover:text-white whitespace-nowrap',
-                            isMobileMenuOpen ? 'text-gray-700' : 'text-green-700'
-                        ]">{{ isMobileMenuOpen ? '閉じる' : 'メニュー' }}</span>
+                    <button @click="toggleMobileMenu" 
+                        class="btn flex flex-col items-center justify-center gap-1 w-20 h-20 border-3 shadow-lg hover:shadow-xl transition-all duration-300 p-1 rounded-2xl group active:scale-95"
+                        :class="isMobileMenuOpen 
+                            ? 'bg-error border-error hover:bg-error-focus text-error-content' 
+                            : 'bg-green-500 border-green-500 hover:bg-green-600 text-white shadow-green-500/25'"
+                        aria-label="メニューを開く">
+                        <span class="material-icons text-6xl leading-none drop-shadow-sm transition-transform duration-200 group-hover:scale-110" 
+                            :class="isMobileMenuOpen ? 'text-white' : 'text-white'">
+                            {{ isMobileMenuOpen ? 'close' : 'apps' }}
+                        </span>
+                        <span class="font-bold text-center leading-none mt-0.5 drop-shadow-sm"
+                            :class="[
+                                isMobileMenuOpen ? 'text-white/90 text-[10px]' : 'text-white/90 text-xs'
+                            ]">
+                            {{ isMobileMenuOpen ? '閉じる' : 'メニュー' }}
+                        </span>
                     </button>
                 </div>
 
@@ -60,10 +63,9 @@
                 <div
                     class="hidden md:grid grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-3 ml-auto max-w-4xl">
                     <div v-for="button in sortedButtons" :key="button.id" :id="button.id"
-                        class="bg-white rounded-md shadow-md border-3 cursor-pointer transition-all duration-200 hover:shadow-lg active:scale-95 p-4 min-w-[160px] menu-button-hover"
+                        class="tooltip tooltip-bottom bg-white rounded-md shadow-md border-3 cursor-pointer transition-all duration-200 hover:shadow-lg active:scale-95 p-4 menu-button-hover"
                         role="button" tabindex="0" :aria-label="button.ariaLabel" :data-url="button.url"
-                        :style="{ borderColor: button.borderColor }" @click="openExternalLink(button.url)"
-                        @mouseenter="onMouseEnter(button.id, $event)" @mouseleave="onMouseLeave()">
+                        :style="{ borderColor: button.borderColor }" :data-tip="button.tooltip" @click="openExternalLink(button.url)">
                         <div class="flex items-center gap-2">
                             <div class="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0"
                                 :style="{ backgroundColor: button.backgroundColor }">
@@ -72,9 +74,7 @@
                                 </span>
                             </div>
                             <div class="flex-1 text-center">
-                                <h3
-                                    class="text-xl font-semibold text-gray-800 leading-tight whitespace-normal break-words">
-                                    {{ button.title
+                                <h3 class="text-xl font-semibold text-gray-800 leading-tight whitespace-normal break-words">{{ button.title
                                     }}</h3>
                             </div>
                         </div>
@@ -84,41 +84,28 @@
 
             <!-- モバイルメニュー -->
             <div v-if="isMobileMenuOpen" class="md:hidden px-4 pb-4">
-                <div class="bg-gray-200 rounded-xl p-4 shadow-inner">
+                <div class="bg-base-200 rounded-xl p-4 shadow-inner">
                     <div class="grid grid-cols-2 gap-3">
-                        <div v-for="button in sortedButtons" :key="button.id"
-                            class="bg-white rounded-md shadow-md border-3 cursor-pointer transition-all duration-200 hover:shadow-lg active:scale-95 p-4 menu-button-hover"
+                        <button v-for="button in sortedButtons" :key="button.id"
+                            class="tooltip tooltip-top btn btn-ghost flex-col h-auto p-4 gap-2 bg-base-100 border-2 shadow-sm hover:shadow-md transition-all duration-200"
+                            :class="{ 'btn-primary': button.isPrimary }"
+                            :style="{ borderColor: button.borderColor }" :data-tip="button.tooltip"
                             @click="() => { openExternalLink(button.url); isMobileMenuOpen = false; }"
-                            @mouseenter="onMouseEnter(button.id, $event)" @mouseleave="onMouseLeave()"
-                            :style="{ borderColor: button.borderColor }">
-                            <div class="flex flex-col items-center gap-1">
-                                <div class="w-12 h-12 rounded-full flex items-center justify-center"
-                                    :style="{ backgroundColor: button.backgroundColor }">
-                                    <span class="material-icons text-3xl" :style="{ color: button.borderColor }">
-                                        {{ getButtonMobileIcon(button.id) }}
-                                    </span>
-                                </div>
-                                <h3 class="text-sm font-semibold text-gray-800 text-center leading-tight">
-                                    {{
-                                    button.title
-                                    }}</h3>
+                            :aria-label="button.ariaLabel">
+                            <div class="w-12 h-12 rounded-full flex items-center justify-center"
+                                :style="{ backgroundColor: button.backgroundColor }">
+                                <span class="material-icons text-2xl" :style="{ color: button.borderColor }">
+                                    {{ getButtonMobileIcon(button.id) }}
+                                </span>
                             </div>
-                        </div>
+                            <span class="text-sm font-medium text-center leading-tight">{{
+                                button.title
+                            }}</span>
+                        </button>
                     </div>
                 </div>
             </div>
 
-            <!-- ツールチップ -->
-            <div v-if="showTooltip && hoveredButtonId"
-                class="fixed z-50 bg-gray-800/90 backdrop-blur-sm text-white px-4 py-2 rounded-xl text-sm font-semibold shadow-2xl pointer-events-none whitespace-nowrap"
-                :style="{ 
-                    left: tooltipPosition.x + 'px', 
-                    top: tooltipPosition.y + 'px',
-                    transform: 'translateX(-50%)',
-                    textShadow: '0 1px 2px rgba(0, 0, 0, 0.5)'
-                }">
-                {{ buttons.find(b => b.id === hoveredButtonId)?.tooltip }}
-            </div>
 
             <!-- ✅ ヘッダーカード部分 -->
             <div class="px-4 pb-6 md:px-8 grid gap-5 grid-cols-1 md:grid-cols-2 auto-rows-fr max-w-full mx-auto">
