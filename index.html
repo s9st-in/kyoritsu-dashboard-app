@@ -12,17 +12,17 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap"
         rel="stylesheet" />
-  <script type="module" crossorigin src="./assets/main-BxEBrrv3.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/main-Bm3PCik7.css">
+  <script type="module" crossorigin src="./assets/main-Dgb9Lr0M.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/main-CxfgMHCT.css">
 </head>
 
 <body class="font-sans font-normal">
     <div id="app">
-        <div class="navbar bg-white text-gray-800 tracking-wider shadow-md min-h-0 px-4 md:px-8 py-4">
+        <div class="navbar bg-white text-gray-800 tracking-wider shadow-md min-h-0 px-4 md:px-8 py-3">
             <div class="navbar-start">
                 <div class="flex items-center">
                     <span class="text-lg material-icons mr-2">space_dashboard</span>
-                    <span class="hidden md:block text-xl font-bold">重要指標ダッシュボード</span>
+                    <span class="text-md md:text-xl font-bold">重要指標ダッシュボード</span>
                 </div>
             </div>
             <div class="navbar-end">
@@ -84,10 +84,10 @@
 
             <!-- モバイルメニュー -->
             <div v-if="isMobileMenuOpen" class="md:hidden px-4 pb-4">
-                <div class="bg-base-200 rounded-xl p-4 shadow-inner">
+                <div class="bg-gray-100 rounded-xl p-4 shadow-lg border border-gray-200">
                     <div class="grid grid-cols-2 gap-3">
                         <button v-for="button in sortedButtons" :key="button.id"
-                            class="tooltip tooltip-top btn btn-ghost flex-col h-auto p-4 gap-2 bg-base-100 border-2 shadow-sm hover:shadow-md transition-all duration-200"
+                            class="tooltip tooltip-top btn btn-ghost flex-col h-auto p-4 gap-2 bg-white border-2 shadow-sm hover:shadow-md transition-all duration-200"
                             :class="{ 'btn-primary': button.isPrimary }"
                             :style="{ borderColor: button.borderColor }" :data-tip="button.tooltip"
                             @click="() => { openExternalLink(button.url); isMobileMenuOpen = false; }"
@@ -108,13 +108,15 @@
 
 
             <!-- ✅ ヘッダーカード部分 -->
-            <div class="px-4 pb-6 md:px-8 grid gap-5 grid-cols-1 md:grid-cols-2 auto-rows-fr max-w-full mx-auto">
-                <div class="max-h-[320px] min-w-0">
-                    <suiyokai-card></suiyokai-card>
+            <div class="px-4 pb-6 md:px-8 grid gap-5 grid-cols-1 md:grid-cols-2 max-w-full mx-auto">
+                <!-- 水曜会カード -->
+                <div class="h-[360px] md:h-[320px] min-w-0 flex">
+                    <suiyokai-card class="w-full"></suiyokai-card>
                 </div>
 
-                <div class="max-h-[320px] min-w-0">
-                    <announcement-card></announcement-card>
+                <!-- お知らせカード -->
+                <div class="h-[360px] md:h-[320px] min-w-0 flex">
+                    <announcement-card class="w-full"></announcement-card>
                 </div>
             </div>
         </header>
@@ -153,7 +155,7 @@
                             <h3>退院予定</h3><strong aria-live="polite">{{ latestData?.["退院予定数"] ?? "--" }} 人</strong>
                         </div>
                         <div class="card p-4" data-metric="general-ward" role="region" aria-label="一般病棟在院数データ">
-                            <h3>一般病棟在院数</h3><strong aria-live="polite">{{ latestData?.["一般病棟在院数"] ?? "--" }}/218
+                            <h3>一般病棟在院数</h3><strong aria-live="polite">{{ latestData?.["一般病棟在院数"] ?? "--" }}/202
                                 床</strong>
                         </div>
                         <div class="card p-4" data-metric="icu" role="region" aria-label="集中治療室在院数データ">
@@ -163,16 +165,6 @@
                         <div class="card p-4" data-metric="average-stay" role="region" aria-label="平均在院日数データ">
                             <h3>平均在院日数</h3><strong aria-live="polite">{{ latestData?.["平均在院日数"] ?? "--" }} 日</strong>
                         </div>
-                        <!-- <div v-for="button in sortedButtons" :key="button.id" :id="button.id"
-                            class="w-full h-full flex flex-col shadow bg-white rounded-lg text-center justify-center min-h-[120px] p-4 cursor-pointer transition-all duration-200 ease-in-out hover:-translate-y-0.5 hover:shadow-[2px_4px_8px_rgba(0,0,0,0.15)] focus:outline-2 focus:outline-blue-500 focus:outline-offset-2 active:translate-y-0"
-                            role="button" tabindex="0" :aria-label="button.ariaLabel" :data-url="button.url"
-                            :style="getButtonStyle(button)" @click="openExternalLink(button.url)"
-                            @mouseenter="onMouseEnter(button.id)" @mouseleave="onMouseLeave()">
-                            <h3
-                                class="text-3xl font-bold whitespace-nowrap my-2 text-gray-700 overflow-hidden text-ellipsis">
-                                {{ button.title }}</h3>
-                            <strong class="text-2xl font-bold mb-1 text-black">クリックして表示</strong>
-                        </div> -->
                     </div>
                 </section>
 
