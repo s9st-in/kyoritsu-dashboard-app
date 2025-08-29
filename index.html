@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="ja" data-theme="light">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>戸畑共立病院ダッシュボード</title>
+
+  <!-- Google Fonts / Noto + Material Symbols-->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,400..700,0..1,-50..200" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script type="module" crossorigin src="./assets/main-DK4bF7QA.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/main-C_5ZiO89.css">
+</head>
+
+<body class="font-sans">
+  <!-- 開発版バナー -->
+  <div id="development-banner"></div>
+
+  <div id="app">
+    <app-header-navbar :formatted-date-time="formattedDateTime"></app-header-navbar>
+    <header>
+      <div class="flex items-center justify-between py-section-y px-section-x">
+        <!-- 病院名（左側固定） -->
+        <h1 class="text-gray-800 text-4xl font-bold flex-shrink-0">
+          戸畑共立病院
+        </h1>
+
+        <!-- メニューボタン（モバイルのみ・右側固定） -->
+        <button @click="toggleMobileMenu"
+          class="md:hidden btn btn-square btn-lg flex flex-col items-center justify-center gap-0.5 w-16 h-16 border-[3px] shadow-lg hover:shadow-xl transition-all duration-300 p-1 rounded-lg group active:scale-95 flex-shrink-0"
+          :class="isMobileMenuOpen ? 'btn-error hover:btn-error' : 'btn-success hover:btn-success'"
+          aria-label="メニューを開く">
+          <span class="material-symbols-outlined icon-4xl leading-none drop-shadow-sm transition-transform duration-200 group-hover:scale-110 text-white">
+            {{ isMobileMenuOpen ? 'close' : 'apps' }}
+          </span>
+          <span class="font-bold text-center leading-none drop-shadow-sm text-white/90"
+                :class="isMobileMenuOpen ? 'text-[9px]' : 'text-[10px]'">
+            {{ isMobileMenuOpen ? '閉じる' : 'メニュー' }}
+          </span>
+        </button>
+
+        <!-- デスクトップメニュー（右側固定） -->
+        <div class="hidden md:grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 max-w-5xl relative flex-shrink-0">
+            <board-menu-card
+              v-for="button in sortedButtons"
+              :key="'desktop-' + button.id"
+              :button="button"
+              :icon="getButtonMobileIcon(button.id)"
+              orientation="horizontal"
+              @click="openExternalLink"
+            ></board-menu-card>
+        </div>
+      </div>
+
+      <!-- モバイルメニュー -->
+      <div v-show="isMobileMenuOpen" class="md:hidden px-section-x pb-section-x relative">
+        <div class="bg-gray-100 rounded-xl p-4 shadow-lg border border-gray-200">
+          <div class="grid grid-cols-2 gap-3">
+            <board-menu-card
+              v-for="button in sortedButtons"
+              :key="'mobile-' + button.id"
+              :button="button"
+              :icon="getButtonMobileIcon(button.id)"
+              orientation="vertical"
+              @click="handleMobileMenuClick"
+            ></board-menu-card>
+          </div>
+        </div>
+      </div>
+
+      <!-- ✅ ヘッダーカード部分 -->
+      <div class="px-section-x pb-section-y grid gap-cards grid-cols-1 md:grid-cols-2 max-w-full mx-auto">
+        <!-- 水曜会カード -->
+        <div class="h-[360px] md:h-[320px] min-w-0 flex">
+          <suiyokai-card class="w-full"></suiyokai-card>
+        </div>
+
+        <!-- お知らせカード -->
+        <div class="h-[360px] md:h-[320px] min-w-0 flex">
+          <announcement-card class="w-full"></announcement-card>
+        </div>
+      </div>
+    </header>
+
+    <!-- ✅ メインコンテンツ -->
+    <main>
+      <!-- ページナビゲーションセクション -->
+      <board-section-navbar
+        nav-id="dashboard-section-nav"
+        sticky-class=""
+      >
+        <!-- パンくずリストスロット -->
+        <template #breadcrumb>
+          <ol class="breadcrumbs text-sm overflow-visible">
+            <li>
+              <span class="text-gray-600">戸畑共立病院</span>
+            </li>
+          </ol>
+        </template>
+
+        <!-- 説明テキストスロット -->
+        <template #description>
+          <p class="text-md text-gray-600">
+            戸畑共立病院の指標・グラフを表示しています
+          </p>
+        </template>
+
+        <!-- 絞り込みスロット -->
+        <template #filters="{ isMobile }">
+          <!-- 期間選択ボタン -->
+          <div class="flex items-center gap-2" :class="isMobile ? 'w-full justify-end' : ''">
+            <span class="text-sm text-gray-600 font-medium whitespace-nowrap">表示期間</span>
+            <div class="join">
+              <button
+                v-for="period in availableChartPeriods"
+                :key="period.id"
+                class="join-item btn btn-sm"
+                :class="{
+                  'btn-active': selectedChartPeriod === period.value,
+                }"
+                @click="selectedChartPeriod = period.value"
+                :aria-label="`${period.value}日間のデータを表示`"
+              >
+                {{ period.label }}
+              </button>
+            </div>
+          </div>
+        </template>
+      </board-section-navbar>
+
+      <div class="px-section-x py-section-y mt-section-x">
+        <section class="mb-8" aria-label="病院指標データ">
+          <masonry-wall
+            :items="sortedMetrics"
+            :column-width="160"
+            :gap="20"
+            :min-columns="metricsMinColumns"
+            :max-columns="metricsMaxColumns"
+            class="max-w-full mx-auto"
+          >
+            <template #default="{ item: metric }">
+              <div 
+                class="card shadow-lg w-full h-full min-h-[120px]" 
+                :data-metric="metric.dataMetric" 
+                role="region"
+                :aria-label="metric.ariaLabel"
+              >
+                <div class="card-body p-2 sm:p-3 flex flex-col items-center justify-center w-full gap-1 h-full">
+                  <h3 class="card-title text-content-primary font-bold text-center leading-tight text-base md:text-xl lg:text-2xl xl:text-xl">{{ metric.title }}</h3>
+                  <strong aria-live="polite" class="text-content-secondary font-bold text-2xl md:text-3xl">
+                    {{ getMetricValue(metric) }}
+                  </strong>
+                </div>
+              </div>
+            </template>
+          </masonry-wall>
+        </section>
+
+        <!-- ✅ グラフ部分 -->
+        <section aria-label="データ推移グラフ">
+          <!-- グラフコンテナ（常に表示） -->
+          <masonry-wall
+            :items="chartsData"
+            :column-width="300"
+            :gap="20"
+            :min-columns="1"
+            :max-columns="3"
+            class="max-w-full mx-auto"
+          >
+            <template #default="{ item: chartData }">
+              <div 
+                class="card bg-base-100 shadow-lg h-[400px] flex flex-col w-full"
+                role="img" :aria-label="`${chartData.config.title}の推移グラフ`">
+                <div class="card-body p-4 flex flex-col h-full">
+                  <h3 class="card-title text-lg md:text-xl lg:text-2xl font-extrabold text-gray-700 mb-3 justify-center flex-shrink-0">
+                    {{ chartData.config.title }}
+                  </h3>
+                  <div class="flex-1 relative">
+                    <component :is="ChartComponent" 
+                      :chart-type="chartData.config.type || 'line'"
+                      :chart-title="chartData.config.title"
+                      :chart-id="chartData.config.id"
+                      :y-axis-label="chartData.config.yAxisLabel || chartData.config.unit"
+                      :chart-color="chartData.config.color"
+                      :max-y="chartData.config.maxY"
+                      :unit="chartData.config.unit"
+                      :data="chartData.data"
+                      :labels="chartData.labels" 
+                      :is-fetching="isChartsFetching"
+                      @expand="handleChartExpand(chartData.config)" />
+                  </div>
+                </div>
+              </div>
+            </template>
+          </masonry-wall>
+        </section>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Notification Toast Container -->
+  <div id="notification-toast"></div>
+  
+</body>
+
+</html>
